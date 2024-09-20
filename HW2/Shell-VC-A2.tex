@@ -1,0 +1,230 @@
+\documentclass{exam}
+
+\usepackage[margin=1in]{geometry}
+
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\usepackage{xcolor}
+% For solutions.
+\newenvironment{sol}{
+  \medskip
+
+  \textsc{Solution:}
+}
+{
+  \medskip
+
+}
+
+\pagestyle{headandfoot}
+\firstpageheader{CSCI 221}{}{Shell and Debugging Assignment}
+\runningheader{CSCI 221}{}{Shell and Debugging Assignment}
+
+
+\begin{document}
+\title{Shell and Debugging Assignment (Evaluation)}
+\author{CSCI 221: Computer Science Fundamentals 2}
+\date{Fall 2024}
+\maketitle
+
+
+This assignment is an opportunity to test your understanding of shells and debugging. 
+Feel free to collaborate with others and use resources, but all code and writeups must be your own. 
+For each of the questions, you should also write code to test your results and a makefile that compiles your code. 
+You can use one makefile for all compilations, or you can have separate makefiles for different questions. 
+To submit your assignment, please submit your code, makefile(s), and a pdf file containing your answers. 
+
+\textbf{Due Date:}
+Friday, September 19th at 1:00 pm. 
+
+\begin{questions}
+
+\question[12]
+\textbf{Structure and Makefiles.}
+\begin{parts}
+\part[8]
+Modify your code from the Intro C evaluation assignment to follow the style and structure that we discussed in class. 
+In particular, no file should have code for more than one question. 
+Furthermore, you should be able to create an executable file for each individual question. 
+Body and header files should have names that exactly match the name of the function specified in that question. 
+Body files used to generate executables should have the function name followed by ``\_testing''. 
+
+\part[4]
+Create an additional code file that calls the function from each question (the inputs and how you use them don't matter). 
+Add a rule to your makefile that generates an executable file from that code. 
+\end{parts}
+
+\question[15]
+\textbf{Shell.}
+\begin{parts}
+\part[3]
+What flags are being passed to the following command? 
+What are the arguments associated with each flag? \\
+\texttt{command --abc def -gh ij}
+
+ \begin{sol}
+\color{blue}
+In the given command, (1) \texttt{--abc}, (2) \texttt{-g}, (3) \texttt{-h} are the flags. \texttt{def} is the argument associated to the flag (1), and \texttt{ij} is the argument being passed to (2) and (3). 
+\end{sol}
+\part[4]
+Assume that you just installed (or wrote) a new library, and you would like to be able to run an executable from that library using your shell with one command that did not depend on your current working directory. 
+How would you accomplish this?
+
+ \begin{sol}
+\color{blue}
+Say the executable is called \texttt{exec.out} and is located at \texttt{$\sim$/code/CS221/exec/}. The way to run the executable from anywhere is to (1) add the directory to the executable to \texttt{\$Path}: 
+\par 
+\begin{lstlisting}
+export PATH = "/code/CS221/exec/":$PATH
+\end{lstlisting}
+This will add the directory of the executable to the \texttt{\$PATH} environment variable. So whenever we run the executable, the compiler will check for the executable in the directory.
+\end{sol}
+
+\part[4]
+Shells have many configurable settings that allow users to modify how they interact with the shell. 
+For bash, these settings are stored in the {\tt .bashrc} file in your home directory. 
+Other shells will usually have a similar file. 
+Find and open this file. 
+What are some settings that are important to how you interact with the shell?
+Customize your shell to be useful to you. 
+Submit your modified settings file. 
+ \begin{sol}
+ I added an additional function in the end:
+\begin{lstlisting}
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/sajidmahamud/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/sajidmahamud/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/sajidmahamud/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/sajidmahamud/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# define a function called run to make life easy
+
+run(){
+        File=$1
+        gcc $File.c -o $File.out
+        ./$File.out
+}
+
+\end{lstlisting}
+\end{sol}
+
+
+\part[4]
+How can you count the number of instances of the word "that" in the first 50 lines of the file {\tt Logistics.tex} using a single command? 
+(The file {\tt Logistics.tex} is the tex file from the very first assignment. It's on Moodle if you want to test your code.)
+
+ \begin{sol}
+\color{blue}Assuming the working directory is the directory where \texttt{Logistics.tex} is stored, we'll use the following command \\
+\texttt{head -n 50 Logistics.tex | grep -i ''that'' | wc -l}
+\end{sol}
+\end{parts}
+
+\question[18]
+\textbf{Version Control.}
+\begin{parts}
+\part[2]
+What is the difference between creating a repository and cloning a repository?
+
+ \begin{sol}
+\color{blue}
+The main difference is in the purpose: you create a repository for an entirely new project, whereas you clone a repository to work (or continue to work) on an existing project.
+\end{sol}
+
+\part[2]
+What is the difference between a staged file and a committed file?
+ \begin{sol}
+\color{blue}
+Both relate to the status of new changes made to a file. Staged files are at a preparatory state before they are committed. Once a staged file is committed, a snapshot of the changes in the file is stored within the repository. The other difference is about the temporality of the changes. Say you've made changes to \texttt{file.txt} and you've already staged it. Before committing to store the new changes into repository history, you realize that something crucial was missing from the file. Now, you can go ahead and \texttt{restore --staged} the changes from the preparatory state, without affecting the original file in the working directory.
+\end{sol}
+
+\part[2]
+If you realized that a previous implementation in your project was better for what you were trying to do now, and you wanted to return the entire repository to the state at that time, what command should you run to do this?
+
+ \begin{sol}
+\color{blue} I will ignore the ambiguity of the phrase `return the entire repository' to the state at that time and interpret it as wanting to undo all changes made to the repository permanently. The way to do it is \texttt{reset --hard [commit ID]}. This is assuming I had a \texttt{commit} made for the time in question. \end{sol}
+
+\part[2]
+If you made a mistake while working on a project and wanted to undo the changes you made to a particular file, what command should you run to do this?
+
+ \begin{sol}
+\color{blue} Again, I will ignore the ambiguity of the phrase ``undo changes you made'' because it does not mention whether the changed file was staged or committed or pushed to remote. Let's call the file: \texttt{file}. If the changes weren't staged then \texttt{git restore file} will remove the changes. If the file was staged, \texttt{git restore --staged file} will take the file out of staging area and doing  \texttt{git restore file} will revert the changes. If the \texttt{file} was committed and I want to undo the changes back to the previous commit then we can use: \texttt{git reset --hard HEAD~1}. 
+
+\end{sol}
+
+%\part[4]
+%What are branches in version control? 
+%When are they useful? 
+%How do you use them? (Include commands.)
+
+%\part[3]
+%What is the difference between git branch -d and git branch -D? 
+%Why would you use one over the other?
+
+\part[4]
+Assume that you are working on a project using multiple different machines which each have a copy of the project. 
+If you make changes on one machine, then make changes on another machine prior to synchronizing your repository, you will have to merge your changes. 
+Explain the process of merging changes, including what happens if your different versions changed the same file. 
+
+
+ \begin{sol}
+\color{blue}
+One way to resolve the issue is to first \texttt{commit} and \texttt{push} changes made from \texttt{device 1} to the remote repo. Then on \texttt{device 2}, go ahead and \texttt{commit} the changes, but don't \texttt{push} changes to the remote repo yet. Do \texttt{git pull origin main} (assuming that the changes are all in one branch). Then there are two possibilities: (1) changes were made to different files and \texttt{merge} happens automatically, (2) changes were made to the same file and \texttt{merge} conflict needs to be resolved manually by going to the file. Once that's done, we can \texttt{add}, \texttt{commit} and \texttt{git push origin main} the changes to the remote repository.
+\end{sol}
+
+\part[3]
+What is a pull request?
+
+ \begin{sol}
+ \color{blue}
+The pull request is usually followed by an independent \texttt{git push} from a \texttt{branch} other than \texttt{main}. Say you are working on a branch called \texttt{branch grader} and you made changes to the repository on the branch \texttt{sajid}. After making the changes, you \texttt{push} the changes to the remote repo on \texttt{github}. You can then request the changes to be added to the \texttt{main} branch (or any branch you select as the target). This is what a pull request is. 
+\end{sol}
+
+\part[3]
+What Git command should you use to compare two different commits in the same repository?
+How does it work?
+
+ \begin{sol}
+\color{blue}
+Say I want to compare changes between \texttt{commit1} and \texttt{commit2}. The command to use is \texttt{git diff commit1 commit2}. Doing so reveals the list of comparisons between the commit in terms of (1) new additions: which lines are added, (2) deletions: which lines are removed, (3) modifications: which lines are modified.
+\end{sol}
+
+\end{parts}
+
+
+\end{questions}
+
+\end{document}
